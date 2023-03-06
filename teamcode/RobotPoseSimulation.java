@@ -4,7 +4,7 @@
 // the path definitions in PathDetails. The visualization can be rendered with FTC Dashboard.
 //
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 package org.firstinspires.ftc.teamcode;
 

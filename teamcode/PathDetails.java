@@ -18,7 +18,7 @@
 // right. Whenever the encoders are reset, the COS will be reset to the current location.
 //
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 package org.firstinspires.ftc.teamcode;
 

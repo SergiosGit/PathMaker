@@ -13,7 +13,7 @@
 // a ramp-down of power.
 //
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 
 

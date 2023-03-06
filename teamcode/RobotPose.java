@@ -22,7 +22,7 @@
 //      values obtained by the prior readPose() call
 //
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

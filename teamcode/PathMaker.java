@@ -3,10 +3,11 @@
 //
 // This is the main module showing the use of the PathMaker library that can be used
 // for autonomous control of a Mecanum wheel drive train for the FTC competition.
-// This implementation uses the FTC Dashboard for developing the robot path settings.
+// This implementation uses the FTC Dashboard for developing the robot path settings
+// including simulating robot movements that can be displayed on the dashboard.
 //
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 package org.firstinspires.ftc.teamcode;
 

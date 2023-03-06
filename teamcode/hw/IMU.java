@@ -1,5 +1,5 @@
 // MIT License
-// Copyright (c) 2023 Sergio Lemaitre
+// Copyright (c) 2023 bayrobotics.org
 //
 package org.firstinspires.ftc.teamcode.hw;
 import com.qualcomm.hardware.bosch.BHI260IMU;
