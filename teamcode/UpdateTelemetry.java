@@ -5,8 +5,6 @@
 //
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.PathMaker.SIMULATION;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
@@ -17,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class UpdateTelemetry {
 
     public static void params(Telemetry telemetry){
-        if (SIMULATION) {
+        if (GameSetup.SIMULATION) {
             telemetry.addData("Sim forward", RobotPoseSimulation.forward);
             telemetry.addData("Sim strafe", RobotPoseSimulation.strafe);
             telemetry.addData("Sim angle", RobotPoseSimulation.angle);

@@ -27,7 +27,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class PathManager {
     static double maxPowerStep = 0.05;
-    public static long timeStep_ms = 100;
+    public static long timeStep_ms = 50;
     public static double forwardRampReach_in = 24;
     public static double strafeRampReach_in = 12;
     public static double turnRampReach_deg = 45;
@@ -52,50 +52,52 @@ public class PathManager {
         strafePowerLast = 0;
         turnPowerLast = 0;
         // double actualStartTime_ms = System.currentTimeMillis();
+        ParallelAction.initPath();
         while (elapsedTime_ms < PathDetails.pathTime_ms) {
             // move robot
             elapsedTime_ms += timeStep_ms;
             // double actualElapsedTime_ms = System.currentTimeMillis() - actualStartTime_ms;
-            // make forward movement
+            // calculate remaining forward movement in original COS
             if (elapsedTime_ms > PathDetails.forwardDelay_ms) {
                 // calculate distance to goal
                 deltaIsShouldForward = calculateIsShould(THISDOF.FORWARD);
                 // calculate correction power, proportional to distance to goal but limited by maxPowerStep
                 forwardPower = calculateCorrectionPower(THISDOF.FORWARD);
             }
-            // make strafe movement
+            // calculate remaining strafe movement in original COS
             if (elapsedTime_ms > PathDetails.strafeDelay_ms) {
                 // calculate distance to goal
                 deltaIsShouldStrafe = calculateIsShould(THISDOF.STRAFE);
                 // calculate correction power, proportional to distance to goal but limited by maxPowerStep
                 strafePower = calculateCorrectionPower(THISDOF.STRAFE);
             }
-            // make turn movement
+            // calculate remaining turn movement in original COS
             if (elapsedTime_ms > PathDetails.turnDelay_ms) {
                 // calculate distance to goal
                 deltaIsShouldAngle = calculateIsShould(THISDOF.TURN);
                 // calculate correction power, proportional to distance to goal but limited by maxPowerStep
                 turnPower = calculateCorrectionPower(THISDOF.TURN);
             }
-            // balance power so it doesn't exceed 1
-            balancePower();
-            if (PathMaker.SIMULATION) {
+            balancePower(); // balance power so it doesn't exceed 1
+            if (GameSetup.SIMULATION) {
                 // move robot in simulation mode
                 RobotPoseSimulation.updatePose(forwardPower, strafePower, turnPower, timeStep_ms);
             } else {
-                // put real power on the wheels
+                // move real robot
                 RobotPose.updatePose(forwardPower, strafePower, turnPower);
             }
             Thread.sleep(timeStep_ms);
             // update telemetry after timeStep_ms to measure how far
             // the robot moved with the new settings
             // this is only necessary for the "real" robot
-            if (!PathMaker.SIMULATION) {
+            if (!GameSetup.SIMULATION) {
                 RobotPose.readPose();
             }
+            ParallelAction.execute(PathDetails.parallelAction, deltaIsShouldForward, deltaIsShouldStrafe);
             UpdateTelemetry.params(telemetry);
             UpdateTelemetry.pose(dashboard);
         }
+        ParallelAction.finish(PathDetails.parallelAction);
     }
 
     private static void balancePower() {
@@ -121,19 +123,16 @@ public class PathManager {
             signumIsShould = Math.signum(deltaIsShouldForward);
             rampReach = forwardRampReach_in;
             lastPower = forwardPowerLast;
-            maxPowerFinal = PathDetails.forwardPowerFinal;
         } else if (dof == THISDOF.STRAFE) {
             deltaIsShould = deltaIsShouldStrafe;
             signumIsShould = Math.signum(deltaIsShouldStrafe);
             rampReach = strafeRampReach_in;
             lastPower = strafePowerLast;
-            maxPowerFinal = PathDetails.strafePowerFinal;
         } else {
             deltaIsShould = deltaIsShouldAngle;
             signumIsShould = Math.signum(deltaIsShouldAngle);
             rampReach = turnRampReach_deg;
             lastPower = turnPowerLast;
-            maxPowerFinal = PathDetails.turnPowerFinal;
         }
         if (Math.abs(deltaIsShould) > rampReach) {
             // outside reach value: move with maximum available power
@@ -158,7 +157,7 @@ public class PathManager {
 
 
     private static double calculateIsShould(THISDOF dof) {
-        if (PathMaker.SIMULATION) {
+        if (GameSetup.SIMULATION) {
             if (dof == THISDOF.FORWARD) {
                 return PathDetails.forwardGoal_in - RobotPoseSimulation.forward;
             } else if (dof == THISDOF.STRAFE) {

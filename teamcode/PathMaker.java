@@ -24,22 +24,14 @@ import org.firstinspires.ftc.teamcode.hw.DriveTrain;
 @Autonomous
 public class PathMaker extends LinearOpMode {
 
-    public enum RobotModel {ROBOT1,ROBOT2}
-    public static RobotModel robotModel = RobotModel.ROBOT1;
-    public enum Terminal {RED,BLUE}
-    public static Terminal thisTerminal = Terminal.RED;
-    public enum TeamColor {RED,BLUE}
-    public static TeamColor thisTeamColor = TeamColor.RED;
     public static double thisForwardPower = 0;
     public static double thisStrafePower = 0;
     public static double thisTurnPower = 0.2;
     public static double thisHeadingDrive = 0;
-    public static int thisPathNumber = 0;
+    public static int thisPathNumber = 1;
     public static int runTest_ms = 100;
-    public static boolean runSimulation = false;
-    public static boolean runDriveTest = true;
-    public static int thisNumberSteps = 1;
-    public static boolean SIMULATION = false; // used in PathManager to switch to simulation mode
+    public static boolean runDriveTest = false;
+    public static int thisNumberSteps = 3;
 
 
 
@@ -52,62 +44,49 @@ public class PathMaker extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         waitForStart();
-        if (runSimulation) {
+        if (GameSetup.SIMULATION) {
             RobotPoseSimulation.initializePose(0, 0, 0);
         } else {
             RobotPose.initializePose(this, driveTrain, telemetry);
         }
 
         if (opModeIsActive()) {
-            if (!runSimulation) {
-                if (isStopRequested()) return;
-                if (runDriveTest) {
-                    RobotPose.initializePose(this, driveTrain, telemetry);
-                    for (int i = 0; i < thisNumberSteps; i++) {
-                        if (thisPathNumber == -1){
-                            WheelPowerManager.setDrivePower(driveTrain, thisForwardPower, thisStrafePower, thisTurnPower, thisHeadingDrive);
-                            RobotPose.readPose();
-                        } else if (thisPathNumber == 0){
-                            // use dashboard parameters
-                            PathManager.moveRobot(dashboard, telemetry);
-                        } else if (thisPathNumber==1){
-                            PathDetails.setPath_1();
-                            PathManager.moveRobot(dashboard, telemetry);
-                        } else if (thisPathNumber == 2){
-                            PathDetails.setPath_2();
-                            PathManager.moveRobot(dashboard, telemetry);
-                        } else if (thisPathNumber == 3){
-                            PathDetails.setPath_3();
-                            PathManager.moveRobot(dashboard, telemetry);
-                        }
-                        UpdateTelemetry.params(telemetry);
-                        sleep(runTest_ms);
-                    }
-                    WheelPowerManager.setDrivePower(driveTrain, 0, 0, 0, 0);
-                } else {
-                    PathDetails.setPath_1();
+            if (isStopRequested()) return;
+            if (runDriveTest) {
+                RobotPose.initializePose(this, driveTrain, telemetry);
+                if (thisPathNumber == -1) {
+                    WheelPowerManager.setDrivePower(driveTrain, thisForwardPower, thisStrafePower, thisTurnPower, thisHeadingDrive);
+                    RobotPose.readPose();
+                } else if (thisPathNumber == 0) {
+                    // use dashboard parameters
+                    ParallelAction.init();
                     PathManager.moveRobot(dashboard, telemetry);
-                    sleep(1000);
-                    for (int i = 0; i < thisNumberSteps; i++) {
-                        PathDetails.setPath_2();
-                        PathManager.moveRobot(dashboard, telemetry);
-                        sleep(1000);
-                        PathDetails.setPath_3();
-                        PathManager.moveRobot(dashboard, telemetry);
-                        sleep(1000);
-                    }
+                    UpdateTelemetry.params(telemetry);
+                    sleep(runTest_ms);
+                } else if (thisPathNumber == 1) {
+                    PathDetails.setPath_startToJunction();
+                    PathManager.moveRobot(dashboard, telemetry);
                 }
+                WheelPowerManager.setDrivePower(driveTrain, 0, 0, 0, 0);
             } else {
-                PathDetails.setPath_1();
+                PathDetails.setPath_startToJunction();
                 PathManager.moveRobot(dashboard, telemetry);
-                sleep(1000);
-                for (int i = 0; i < 5; i++) {
-                    PathDetails.setPath_2();
+                for (int i = 0; i < thisNumberSteps; i++) {
+
+                    PathDetails.setPath_junctionDeliver();
                     PathManager.moveRobot(dashboard, telemetry);
-                    sleep(1000);
-                    PathDetails.setPath_3();
+
+                    PathDetails.setPath_junctionBackOff();
                     PathManager.moveRobot(dashboard, telemetry);
-                    sleep(1000);
+
+                    PathDetails.setPath_junctionToStack();
+                    PathManager.moveRobot(dashboard, telemetry);
+
+                    PathDetails.setPath_stack();
+                    PathManager.moveRobot(dashboard, telemetry);
+
+                    PathDetails.setPath_stackToJunction();
+                    PathManager.moveRobot(dashboard, telemetry);
                 }
             }
         }

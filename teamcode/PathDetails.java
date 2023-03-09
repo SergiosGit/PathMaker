@@ -27,6 +27,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class PathDetails {
     public static double pathTime_ms;
+    public static ParallelAction.ACTION parallelAction;
     // Note: the offsets defined below are used by the PathManager and are useful to set an offset
     // from an arbitrary origin when using the FTC Dashboard. The default (offset=0) defines the
     // robot centric coordinate system at the beginning of the path.
@@ -36,54 +37,78 @@ public class PathDetails {
     // set initial delay
     public static double forwardDelay_ms;
     public static double strafeDelay_ms;
-    public static double forwardPowerFinal=0, strafePowerFinal=0, turnPowerFinal=0;
     public static double turnDelay_ms;
-    // set path time
-    // path 1
-    public static void setPath_1()
-    {
-        // duration
-        pathTime_ms = 5000;
-        // forward
-        forwardGoal_in = 57;;
-        forwardDelay_ms = 0;
-        // strafe
-        strafeGoal_in = 0;;
-        strafeDelay_ms = 0;
-        // turn
-        turnGoal_deg = 45;;
-        turnDelay_ms = 3000;
-    }
 
-    public static void setPath_2()
-    {
-        // stopping the clock before reaching the defined distance goal
-        // causes the robot to roll into camera guided mode
-        // and not waste time by stopping at goal point
-        pathTime_ms = 2800;
-        // forward
-        forwardGoal_in = 53;
-        forwardDelay_ms = 500;
-        // strafe
-        strafeGoal_in = -20;
-        strafeDelay_ms = 1500;
-        // turn
-        turnGoal_deg = -90;
-        turnDelay_ms = 0;
+    public static void adjustSignTerminalColor(){
+        // adjust for terminal color, RED is default
+        if (GameSetup.thisTerminal == GameSetup.Terminal.BLUE){
+            int thisTerminalSign = -1;
+            strafeGoal_in *= thisTerminalSign;
+            turnGoal_deg *= thisTerminalSign;
+        }
     }
-    public static void setPath_3()
+    public static void setPath_startToJunction()
     {
-        // duration
-        pathTime_ms = 2600;
-        // forward
-        forwardGoal_in = 53;
-        forwardDelay_ms = 0;
-        // strafe
-        strafeGoal_in = 0;
-        strafeDelay_ms = 0;
-        strafePowerFinal = 0.1;
-        // turn
-        turnGoal_deg = 45;
-        turnDelay_ms = 900;
+        // move robot to medium junction (avoid collision at high junction
+        // while robot rotates, move cone with signal sleeve out of the way
+        pathTime_ms = 3000; parallelAction = ParallelAction.ACTION.NONE;
+        // forward             strafe              turn
+        forwardGoal_in = 51; strafeGoal_in = 1.5;    turnGoal_deg = 135;
+        forwardDelay_ms = 0; strafeDelay_ms = 1500;   turnDelay_ms = 1500;
+        adjustSignTerminalColor();
+        //
+        // parameters for high junction saved for future use
+        // forward             strafe              turn
+        //        forwardGoal_in = 57; strafeGoal_in = 0;    turnGoal_deg = 45;
+        //        forwardDelay_ms = 0; strafeDelay_ms = 0;   turnDelay_ms = 3000;
+    }
+    public static void setPath_junctionDeliver()
+    {
+        // this is a short path, maybe 6-12 inches movement
+        // robot is approaching junction while raising the intake
+        pathTime_ms = 1700; parallelAction = ParallelAction.ACTION.JUNCTION_DELIVER;
+        // forward             strafe                turn
+        forwardGoal_in = 39.5;   strafeGoal_in = 8;    turnGoal_deg = 145;
+        forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 0;
+        adjustSignTerminalColor();
+    }
+    public static void setPath_junctionBackOff()
+    {
+        // this is a short path, maybe 6-12 inches movement
+        // robot is moving away from junction while lowering the intake
+        pathTime_ms = 400; parallelAction = ParallelAction.ACTION.JUNCTION_BACKOFF;
+        // forward             strafe                turn
+        forwardGoal_in = 51;   strafeGoal_in = 1.5;    turnGoal_deg = 145;
+        forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 0;
+        adjustSignTerminalColor();
+    }
+    public static void setPath_junctionToStack()
+    {
+        // exit path before reaching goal for rolling handover to the stack portion
+        pathTime_ms = 1800; parallelAction = ParallelAction.ACTION.NONE;
+        // forward             strafe                  turn
+        forwardGoal_in = 53;   strafeGoal_in = -30;    turnGoal_deg = 270;
+        forwardDelay_ms = 0; strafeDelay_ms = 700;   turnDelay_ms = 0;
+        adjustSignTerminalColor();
+    }
+    public static void setPath_stack()
+    {
+        // this is a "zero length" path only to grab another cone
+        // set strafe goal just past the wall so the robot is
+        // slowly trying to move into the wall
+        pathTime_ms = 1500; parallelAction = ParallelAction.ACTION.STACK;
+        // forward             strafe                  turn
+        forwardGoal_in = 53;   strafeGoal_in = -32;    turnGoal_deg = 270;
+        forwardDelay_ms = 0; strafeDelay_ms = 0;   turnDelay_ms = 0;
+        adjustSignTerminalColor();
+    }
+    public static void setPath_stackToJunction()
+    {
+        // moving robot from stack back to the junction
+        pathTime_ms = 1500; parallelAction = ParallelAction.ACTION.NONE;
+        // forward             strafe                turn
+        forwardGoal_in = 51;   strafeGoal_in = 0;    turnGoal_deg = 145;
+        forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 500;
+        adjustSignTerminalColor();
     }
 }

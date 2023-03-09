@@ -5,11 +5,13 @@
 //
 package org.firstinspires.ftc.teamcode.hw;
 
-import static org.firstinspires.ftc.teamcode.PathMaker.RobotModel;
-import static org.firstinspires.ftc.teamcode.PathMaker.robotModel;
+import static org.firstinspires.ftc.teamcode.GameSetup.RobotModel;
+import static org.firstinspires.ftc.teamcode.GameSetup.robotModel;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.GameSetup;
 
 public class DriveTrain {
     /* Declare OpMode members. */
@@ -54,7 +56,7 @@ public class DriveTrain {
     }
 
     public static int[] getEncoderValues() {
-        if (robotModel == RobotModel.ROBOT1) {
+        if (robotModel == GameSetup.RobotModel.ROBOT1) {
 //            encLeft = hardwareMap.dcMotor.get("front_left_drive");
 //            encRight = hardwareMap.dcMotor.get("back_right_drive");
 //            encAux = hardwareMap.dcMotor.get("back_left_drive");

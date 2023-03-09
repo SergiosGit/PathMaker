@@ -50,14 +50,14 @@ public class RobotPoseSimulation {
         int yoffset = 36;
         int xoffset = 72;
 
-        if (PathMaker.thisTeamColor == PathMaker.TeamColor.RED) {
+        if (GameSetup.thisTeamColor == GameSetup.TeamColor.RED) {
             xMultiplierTeam = 1;
             yMultiplierTeam = 1;
         } else {
             xMultiplierTeam = -1;
             yMultiplierTeam = -1;
         }
-        if (PathMaker.thisTerminal == PathMaker.Terminal.RED){
+        if (GameSetup.thisTerminal == GameSetup.Terminal.RED){
             yMultiplierTerminal = -1;
         } else {
             yMultiplierTerminal = 1;

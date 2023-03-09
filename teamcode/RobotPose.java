@@ -29,8 +29,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.hw.DriveTrain;
 import org.firstinspires.ftc.teamcode.hw.IMU;
-import static org.firstinspires.ftc.teamcode.PathMaker.RobotModel;
-import static org.firstinspires.ftc.teamcode.PathMaker.robotModel;
+import static org.firstinspires.ftc.teamcode.GameSetup.RobotModel;
+import static org.firstinspires.ftc.teamcode.GameSetup.robotModel;
 import static org.firstinspires.ftc.teamcode.hw.DriveTrain.getEncoderValues;
 
 public class RobotPose {
@@ -59,6 +59,7 @@ public class RobotPose {
     private static Telemetry poseTelemetry;
     private static DriveTrain poseDriveTrain;
     private static IMU imu = new IMU(null);
+
     public static void initializePose(LinearOpMode opMode, DriveTrain driveTrain, Telemetry telemetry){
         driveTrain.init();
         if (robotModel == RobotModel.ROBOT2) {
@@ -87,6 +88,8 @@ public class RobotPose {
         previousAuxPosition = 0;
         previousRightPosition = 0;
         previousLeftPosition = 0;
+        ParallelAction.setOpMode(opMode);
+        ParallelAction.init();
     }
     public static void updatePose(double forwardDrive, double strafeDrive, double rotateDrive){
         double powerFL, powerFR, powerBL, powerBR;
