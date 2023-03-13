@@ -2,11 +2,8 @@
 // MIT License
 // Copyright (c) 2023 bayrobotics.org
 //
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.op;
 
-import com.acmerobotics.dashboard.config.Config;
-
-@Config
 public class GameSetup {
     public static boolean SIMULATION = false; // used to switch to simulation mode
 

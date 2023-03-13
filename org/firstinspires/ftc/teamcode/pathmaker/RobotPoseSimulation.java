@@ -6,11 +6,10 @@
 // MIT License
 // Copyright (c) 2023 bayrobotics.org
 //
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pathmaker;
 
-import com.acmerobotics.dashboard.config.Config;
+import org.firstinspires.ftc.teamcode.op.GameSetup;
 
-@Config
 public class RobotPoseSimulation {
 
     public static double angle = 0, forward = 0, strafe = 0;

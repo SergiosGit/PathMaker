@@ -20,17 +20,18 @@
 // MIT License
 // Copyright (c) 2023 bayrobotics.org
 //
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pathmaker;
 
-import com.acmerobotics.dashboard.config.Config;
+import org.firstinspires.ftc.teamcode.op.GameSetup;
+import org.firstinspires.ftc.teamcode.op.ParallelAction;
 
-@Config
 public class PathDetails {
     public static double pathTime_ms;
     public static ParallelAction.ACTION parallelAction;
     // Note: the offsets defined below are used by the PathManager and are useful to set an offset
     // from an arbitrary origin when using the FTC Dashboard. The default (offset=0) defines the
     // robot centric coordinate system at the beginning of the path.
+    public static double powerScaling = 1;
     public static double forwardGoal_in, forwardOffset_in=0;
     public static double strafeGoal_in, strafeOffset_in=0;
     public static double turnGoal_deg, turnOffset_deg=0;
@@ -52,6 +53,7 @@ public class PathDetails {
         // move robot to medium junction (avoid collision at high junction
         // while robot rotates, move cone with signal sleeve out of the way
         pathTime_ms = 3000; parallelAction = ParallelAction.ACTION.NONE;
+        powerScaling = 1;
         // forward             strafe              turn
         forwardGoal_in = 51; strafeGoal_in = 1.5;    turnGoal_deg = 135;
         forwardDelay_ms = 0; strafeDelay_ms = 1500;   turnDelay_ms = 1500;
@@ -67,6 +69,7 @@ public class PathDetails {
         // this is a short path, maybe 6-12 inches movement
         // robot is approaching junction while raising the intake
         pathTime_ms = 1700; parallelAction = ParallelAction.ACTION.JUNCTION_DELIVER;
+        powerScaling = 1;
         // forward             strafe                turn
         forwardGoal_in = 39.5;   strafeGoal_in = 8;    turnGoal_deg = 145;
         forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 0;
@@ -77,6 +80,7 @@ public class PathDetails {
         // this is a short path, maybe 6-12 inches movement
         // robot is moving away from junction while lowering the intake
         pathTime_ms = 400; parallelAction = ParallelAction.ACTION.JUNCTION_BACKOFF;
+        powerScaling = 1;
         // forward             strafe                turn
         forwardGoal_in = 51;   strafeGoal_in = 1.5;    turnGoal_deg = 145;
         forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 0;
@@ -85,9 +89,12 @@ public class PathDetails {
     public static void setPath_junctionToStack()
     {
         // exit path before reaching goal for rolling handover to the stack portion
-        pathTime_ms = 1800; parallelAction = ParallelAction.ACTION.NONE;
+        // reduced path time from 2600 (too much) to 1800 (too short)
+        pathTime_ms = 2500; parallelAction = ParallelAction.ACTION.NONE;
+        powerScaling = 0.5;
         // forward             strafe                  turn
-        forwardGoal_in = 53;   strafeGoal_in = -30;    turnGoal_deg = 270;
+        // was 53,270
+        forwardGoal_in = 54;   strafeGoal_in = -30;    turnGoal_deg = 275;
         forwardDelay_ms = 0; strafeDelay_ms = 700;   turnDelay_ms = 0;
         adjustSignTerminalColor();
     }
@@ -97,6 +104,7 @@ public class PathDetails {
         // set strafe goal just past the wall so the robot is
         // slowly trying to move into the wall
         pathTime_ms = 1500; parallelAction = ParallelAction.ACTION.STACK;
+        powerScaling = 0.6;
         // forward             strafe                  turn
         forwardGoal_in = 53;   strafeGoal_in = -32;    turnGoal_deg = 270;
         forwardDelay_ms = 0; strafeDelay_ms = 0;   turnDelay_ms = 0;
@@ -106,9 +114,30 @@ public class PathDetails {
     {
         // moving robot from stack back to the junction
         pathTime_ms = 1500; parallelAction = ParallelAction.ACTION.NONE;
+        powerScaling = 1;
         // forward             strafe                turn
         forwardGoal_in = 51;   strafeGoal_in = 0;    turnGoal_deg = 145;
         forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 500;
         adjustSignTerminalColor();
+    }
+    public static void setPath_parking(int zone){
+        // this is a short path, maybe 6-12 inches movement
+        // robot is moving away from junction while lowering the intake
+        // then it parks in the zone
+        int distanceToZone;
+        if (zone == 1){
+            distanceToZone = -23;
+        } else if (zone == 2){
+            distanceToZone = 1;
+        } else {
+            distanceToZone = 24;
+        }
+        pathTime_ms = 400; parallelAction = ParallelAction.ACTION.NONE;
+        powerScaling = 1;
+        // forward             strafe                turn
+        forwardGoal_in = 51;   strafeGoal_in = distanceToZone;    turnGoal_deg = 270;
+        forwardDelay_ms = 0;   strafeDelay_ms = 0;   turnDelay_ms = 0;
+        adjustSignTerminalColor();
+
     }
 }

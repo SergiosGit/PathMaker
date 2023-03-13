@@ -17,21 +17,22 @@
 //
 
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.pathmaker;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
+import org.firstinspires.ftc.teamcode.op.GameSetup;
+import org.firstinspires.ftc.teamcode.op.ParallelAction;
+import org.firstinspires.ftc.teamcode.op.RobotPose;
+import org.firstinspires.ftc.teamcode.op.UpdateTelemetry;
+import org.firstinspires.ftc.teamcode.util.FtcDashboard;
+import org.firstinspires.ftc.teamcode.util.Telemetry;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-@Config
 public class PathManager {
     static double maxPowerStep = 0.05;
-    public static long timeStep_ms = 50;
+    public static long timeStep_ms = 40;
     public static double forwardRampReach_in = 24;
     public static double strafeRampReach_in = 12;
     public static double turnRampReach_deg = 45;
-
+    public static double powerScaling = 1;
     public static double forwardPower, forwardPowerLast;
     public static double strafePower, strafePowerLast;
     public static double turnPower, turnPowerLast;
@@ -44,6 +45,7 @@ public class PathManager {
 
     public static void moveRobot(FtcDashboard dashboard, Telemetry telemetry) throws InterruptedException {
         // initialize
+        powerScaling = PathDetails.powerScaling;
         elapsedTime_ms = 0;
         forwardPower = 0;
         strafePower = 0;
@@ -109,6 +111,9 @@ public class PathManager {
             strafePower /= sumPower;
             turnPower /= sumPower;
         }
+        // power scaling only for forward and strafe
+        forwardPower *= powerScaling;
+        strafePower *= powerScaling;
     }
 
     private static double calculateCorrectionPower(THISDOF dof) {
@@ -117,7 +122,6 @@ public class PathManager {
         double power;
         double signumIsShould;
         double lastPower;
-        double maxPowerFinal;
         if (dof == THISDOF.FORWARD) {
             deltaIsShould = deltaIsShouldForward;
             signumIsShould = Math.signum(deltaIsShouldForward);
