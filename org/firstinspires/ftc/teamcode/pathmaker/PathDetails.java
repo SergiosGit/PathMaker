@@ -22,9 +22,11 @@
 //
 package org.firstinspires.ftc.teamcode.pathmaker;
 
+import com.acmerobotics.dashboard.config.Config;
+
 import org.firstinspires.ftc.teamcode.op.GameSetup;
 import org.firstinspires.ftc.teamcode.op.ParallelAction;
-
+@Config
 public class PathDetails {
     public static double pathTime_ms;
     public static ParallelAction.ACTION parallelAction;
