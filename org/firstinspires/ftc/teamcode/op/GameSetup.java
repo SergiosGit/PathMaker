@@ -8,7 +8,7 @@ public class GameSetup {
     public static boolean SIMULATION = false; // used to switch to simulation mode
 
     public enum RobotModel {ROBOT1,ROBOT2}
-    public static RobotModel robotModel = RobotModel.ROBOT1;
+    public static RobotModel robotModel = RobotModel.ROBOT2;
     public enum Terminal {RED,BLUE}
     public static Terminal thisTerminal = Terminal.RED;
     public enum TeamColor {RED,BLUE}
