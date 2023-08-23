@@ -23,9 +23,11 @@ public class ImageAnimation extends JPanel implements ActionListener {
     private BufferedImage robot, gameField;
     private int x, y;
     private Timer timer;
-    private double pxPerInch = 3.5417;
+    private double pxPerInch = 3.54;
     private int upperLeftX = 54;
     private int upperLeftY = 20;
+    // create boolean flag to indicate end of robot movement
+    private boolean endOfPath = false;
 
     public ImageAnimation() {
         // define path for images        
@@ -39,7 +41,7 @@ public class ImageAnimation extends JPanel implements ActionListener {
             e.printStackTrace();
         }
         try {
-            // read image from file
+            // read image from file`
             gameField = ImageIO.read(new File(imagePath+"GameField.png"));
             System.out.println("gameField size = " + gameField.getWidth(null) + "," + gameField.getHeight(null));
         } catch (Exception e) {
@@ -55,6 +57,20 @@ public class ImageAnimation extends JPanel implements ActionListener {
         GameSetup.thisTeamColor = GameSetup.TeamColor.BLUE;
         GameSetup.thisTerminal = GameSetup.Terminal.RED;
         RobotPoseSimulation.initializePose(0, 0, 0);
+        // start stopwatch app on separate thread
+        // initialize variable stopwatchApp
+        StopwatchApp stopwatchApp = new StopwatchApp();
+        stopwatchApp.setVisible(true);
+        Thread s = new Thread() {
+            public void run() {
+                try {
+                    stopwatchApp.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        s.start();
         // start moveRobot on separate thread
         Thread t = new Thread() {
             public void run() {
@@ -82,12 +98,32 @@ public class ImageAnimation extends JPanel implements ActionListener {
                     int setZone = 3;
                     PathDetails.setPath_parking(setZone);
                     PathManager.moveRobot();
+                    endOfPath = true;
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         };
         t.start();
+
+        // wait for end of robot movement in a separate thread
+        Thread u = new Thread() {
+            public void run() {
+                try {
+                    while (!endOfPath) {
+                        Thread.sleep(100);
+                    }
+                    if (endOfPath) {
+                        System.out.println("end of path");
+                        stopwatchApp.stop();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        u.start();
     }
     
     public void paint(Graphics g) {

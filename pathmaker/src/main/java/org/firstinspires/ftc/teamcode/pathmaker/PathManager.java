@@ -19,6 +19,11 @@
 
 package org.firstinspires.ftc.teamcode.pathmaker;
 
+// import RobotPose from sim package for simulation mode
+import org.firstinspires.ftc.sim.RobotPose;
+// import RobotPose from op package for real robot
+// import org.firstinspires.ftc.teamcode.op.RobotPose;
+
 public class PathManager {
     static double maxPowerStep = 0.05;
     public static long timeStep_ms = 40;
@@ -79,14 +84,14 @@ public class PathManager {
                 RobotPoseSimulation.updatePose(forwardPower, strafePower, turnPower, timeStep_ms);
             } else {
                 // move real robot
-                //RobotPose.updatePose(forwardPower, strafePower, turnPower);
+                RobotPose.updatePose(forwardPower, strafePower, turnPower);
             }
             Thread.sleep(timeStep_ms);
             // update telemetry after timeStep_ms to measure how far
             // the robot moved with the new settings
             // this is only necessary for the "real" robot
             if (!GameSetup.SIMULATION) {
-                //RobotPose.readPose();
+                RobotPose.readPose();
             }
             ParallelAction.execute(PathDetails.parallelAction, deltaIsShouldForward, deltaIsShouldStrafe);
         }

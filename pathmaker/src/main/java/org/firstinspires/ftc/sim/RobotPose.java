@@ -25,8 +25,9 @@
 // Copyright (c) 2023 bayrobotics.org
 //
 
-package org.firstinspires.ftc.teamcode.pathmaker;
+package org.firstinspires.ftc.sim;
 
+import org.firstinspires.ftc.teamcode.pathmaker.PathDetails;
 
 public class RobotPose {
     private static double headingAngle_rad = 0, lastHeadingAngle_rad = 0;
